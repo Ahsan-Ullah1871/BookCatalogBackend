@@ -1,21 +1,25 @@
-import mongoose from 'mongoose'
+import { Prisma } from "@prisma/client";
 import {
-  generic_error_type,
-  modified_error_res_type,
-} from '../../interfaces/error'
+	generic_error_type,
+	modified_error_res_type,
+} from "../../interfaces/error";
 
 export const handleValidationError = (
-  err: mongoose.Error.ValidationError
+	err: Prisma.PrismaClientValidationError
 ): modified_error_res_type => {
-  const all_errors: generic_error_type[] = Object.values(err.errors).map(
-    (el: mongoose.Error.ValidatorError | mongoose.Error.CastError) => {
-      return { path: el?.path, message: el?.message }
-    }
-  )
+	const all_errors: generic_error_type[] = [
+		{
+			path: "",
+			message: err?.message ?? "There have issue currently",
+		},
+	];
 
-  return {
-    status_code: 400,
-    message: 'Validation Error;Some values are missing or incorrect',
-    errorMessages: all_errors,
-  }
-}
+	return {
+		status_code: 400,
+		message:
+			err?.message ??
+			"Validation Error;Some values are missing or incorrect",
+		errorMessages: all_errors,
+	};
+};
+
