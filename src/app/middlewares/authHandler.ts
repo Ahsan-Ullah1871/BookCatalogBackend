@@ -10,7 +10,7 @@ import { UserRole } from "@prisma/client";
 
 // requestValidationHandler
 const authHandler =
-	() =>
+	(...selected_roles: string[]) =>
 	async (
 		req: Request,
 		res: Response,
@@ -52,7 +52,7 @@ const authHandler =
 			}
 
 			//  check if the user has the required role
-			if (!Object.keys(UserRole).includes(role)) {
+			if (!selected_roles.includes(role)) {
 				throw new ApiError(
 					httpStatus.FORBIDDEN,
 					"forbidden"
