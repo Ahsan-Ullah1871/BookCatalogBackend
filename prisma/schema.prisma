@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String             @id @default(uuid())
+  name                String
+  email               String             @unique
+  password            String
+  role                UserRole           @default(Customer)
+  contactNo           String
+  address             String
+  profileImg          String
+  review_and_rattings ReviewAndRatting[]
+  Order               Order[]
+}
+
+enum UserRole {
+  Admin
+  Customer
+}
+
+model Category {
+  id    String @id @default(uuid())
+  title String
+  books Book[]
+}
+
+model Book {
+  id                  String             @id @default(uuid())
+  title               String
+  author              String
+  price               String
+  genre               String
+  publicationDate     DateTime
+  categoryId          String
+  category            Category           @relation(fields: [categoryId], references: [id])
+  review_and_rattings ReviewAndRatting[]
+  OrderBooks          OrderBook[]
+}
+
+model ReviewAndRatting {
+  id     String @id @default(uuid())
+  review String
+  rating Int
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  bookId String
+  book   Book   @relation(fields: [bookId], references: [id])
+}
+
+model Order {
+  id         String      @id @default(uuid())
+  userId     String
+  user       User        @relation(fields: [userId], references: [id])
+  status     OrderStatus @default(pending)
+  createdAt  DateTime    @default(now())
+  OrderBooks OrderBook[]
+}
+
+enum OrderStatus {
+  pending
+  shipped
+}
+
+model OrderBook {
+  id      String @id @default(uuid())
+  bookId  String
+  book    Book   @relation(fields: [bookId], references: [id])
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id])
+}
