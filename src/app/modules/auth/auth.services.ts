@@ -3,12 +3,12 @@ import config from "../../../config";
 import { Secret } from "jsonwebtoken";
 import { User } from "@prisma/client";
 import prisma from "../../../shared/prisma";
-import { IUserLoginResponse } from "../user/user.interface";
+import { IUserLogin, IUserLoginResponse } from "../user/user.interface";
+import ApiError from "../../errors/ApiError";
+import httpStatus from "http-status";
 
 // Create new user
-const user_signup = async (
-	user_data: User
-): Promise<IUserLoginResponse | null> => {
+const user_signup = async (user_data: User): Promise<Partial<User> | null> => {
 	const created_user = await prisma.user.create({
 		data: user_data,
 	});
@@ -16,31 +16,42 @@ const user_signup = async (
 	const userWithoutPassword: Partial<User> = created_user;
 	delete userWithoutPassword.password;
 
+	return userWithoutPassword;
+};
+
+// login user
+const user_login = async (
+	user_data: IUserLogin
+): Promise<ILoginResponse | null> => {
+	const user = await prisma.user.findUnique({
+		where: {
+			email: user_data.email,
+			password: user_data.password,
+		},
+	});
+
+	if (!user) {
+		throw new ApiError(
+			httpStatus.FORBIDDEN,
+			"User not found, check your email and password"
+		);
+	}
+
 	// access token
-	const accessToken = jwtHelper.create_token(
+	const token = jwtHelper.create_token(
 		{
-			id: userWithoutPassword?.id,
-			email: userWithoutPassword?.email,
-			role: userWithoutPassword?.role,
+			userId: user?.id,
+			role: user?.role,
 		},
 		config.jwt.access_token_secret as Secret,
 		config.jwt.access_token_expiresIn as string
 	);
-	// refresh token
-	const refreshToken = jwtHelper.create_token(
-		{
-			id: userWithoutPassword?.id,
-			email: userWithoutPassword?.email,
-			role: userWithoutPassword?.role,
-		},
-		config.jwt.refresh_token_secret as Secret,
-		config.jwt.refresh_token_expiresIn as string
-	);
 
-	return { accessToken, refreshToken, user_details: userWithoutPassword };
+	return { token };
 };
 
 export const AuthServices = {
 	user_signup,
+	user_login,
 };
 

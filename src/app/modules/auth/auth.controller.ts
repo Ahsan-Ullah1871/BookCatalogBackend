@@ -11,27 +11,29 @@ const signupUser = catchAsync(async (req: Request, res: Response) => {
 	const { ...user_data } = req.body;
 	const result = await AuthServices.user_signup(user_data);
 
-	const accessToken = result?.accessToken as string;
-	const refreshToken = result?.refreshToken as string;
-	const user_details = result?.user_details as Partial<User>;
-
-	// cookies options
-	const options = {
-		httpOnly: true,
-		secure: false,
-	};
-
-	res.cookie("refreshToken", refreshToken, options);
-
-	sendResponse<IUserLoginResponse, null>(res, {
+	sendResponse<Partial<User>, null>(res, {
 		status_code: httpStatus.OK,
 		success: true,
-		data: { accessToken, user_details },
+		data: result,
 		message: "User signed up successfully",
+	});
+});
+
+// login  user
+const loginUser = catchAsync(async (req: Request, res: Response) => {
+	const { ...user_data } = req.body;
+	const result = await AuthServices.user_login(user_data);
+
+	sendResponse<ILoginResponse, null>(res, {
+		status_code: httpStatus.OK,
+		success: true,
+		data: result,
+		message: "User logged in successfully",
 	});
 });
 
 export const AuthController = {
 	signupUser,
+	loginUser,
 };
 

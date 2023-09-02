@@ -22,4 +22,10 @@ export const user_signup_zod_schema = z.object({
 		}),
 	}),
 });
+export const user_signin_zod_schema = z.object({
+	body: z.object({
+		email: z.string({ required_error: "Email address is required" }),
+		password: z.string({ required_error: "Password  is required" }),
+	}),
+});
 
