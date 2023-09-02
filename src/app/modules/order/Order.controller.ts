@@ -10,8 +10,12 @@ const AllOrdersList = catchAsync(async (req: Request, res: Response) => {
 	const user_details = req.logged_in_user;
 
 	let result;
+	console.log({ user_details });
+
 	if (user_details?.role === UserRole.customer) {
-		result = OrderServices.customer_all_orders_list(user_details);
+		result = await OrderServices.customer_all_orders_list(
+			user_details
+		);
 	} else {
 		result = await OrderServices.all_orders_list();
 	}

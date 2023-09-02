@@ -28,7 +28,6 @@ const customer_all_orders_list = async (
 	const isCustomerAvailable = await prisma.user.findUnique({
 		where: {
 			id: customer_details?.userId,
-			email: customer_details?.email,
 		},
 	});
 	if (!isCustomerAvailable) {
@@ -93,7 +92,6 @@ const create_order = async (
 	const isCustomerAvailable = await prisma.user.findUnique({
 		where: {
 			id: customer_details?.userId,
-			email: customer_details?.email,
 		},
 	});
 	if (!isCustomerAvailable) {
