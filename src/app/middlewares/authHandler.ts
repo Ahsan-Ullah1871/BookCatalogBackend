@@ -32,6 +32,7 @@ const authHandler =
 				config.jwt.access_token_secret as Secret
 			);
 			const { userId, email, role } = decoded_user;
+			console.log(userId, email, role);
 
 			// set in req
 			req.logged_in_user = decoded_user;

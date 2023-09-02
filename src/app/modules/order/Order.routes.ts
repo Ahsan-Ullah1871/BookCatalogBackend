@@ -15,8 +15,16 @@ router.post(
 	OrderController.orderCreate
 );
 
-router.get("/", OrderController.AllOrdersList);
-router.get("/:id", OrderController.orderDetails);
+router.get(
+	"/",
+	authHandler(UserRole.customer, UserRole.admin),
+	OrderController.AllOrdersList
+);
+router.get(
+	"/:id",
+	authHandler(UserRole.customer, UserRole.admin),
+	OrderController.orderDetails
+);
 
 export const OrderRoutes = router;
 
