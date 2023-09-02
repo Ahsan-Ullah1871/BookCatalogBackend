@@ -72,9 +72,10 @@ enum OrderStatus {
 }
 
 model OrderBook {
-  id      String @id @default(uuid())
-  bookId  String
-  book    Book   @relation(fields: [bookId], references: [id])
-  orderId String
-  order   Order  @relation(fields: [orderId], references: [id])
+  id       String @id @default(uuid())
+  quantity Int    @default(1)
+  bookId   String
+  book     Book   @relation(fields: [bookId], references: [id])
+  orderId  String
+  order    Order  @relation(fields: [orderId], references: [id])
 }

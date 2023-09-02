@@ -15,6 +15,9 @@ const ct_details = async (id: string): Promise<Partial<Category> | null> => {
 		where: {
 			id,
 		},
+		include: {
+			books: true,
+		},
 	});
 	return ct;
 };
