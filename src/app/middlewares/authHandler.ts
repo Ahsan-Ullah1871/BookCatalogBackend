@@ -31,20 +31,13 @@ const authHandler =
 				token,
 				config.jwt.access_token_secret as Secret
 			);
-			const { id, email, role } = decoded_user;
+			const { userId, email, role } = decoded_user;
 
 			// set in req
 			req.logged_in_user = decoded_user;
 
 			//   check if the user is authenticated
-			if (!id) {
-				throw new ApiError(
-					httpStatus.UNAUTHORIZED,
-					"Unauthorized"
-				);
-			}
-
-			if (!email) {
+			if (!userId) {
 				throw new ApiError(
 					httpStatus.UNAUTHORIZED,
 					"Unauthorized"

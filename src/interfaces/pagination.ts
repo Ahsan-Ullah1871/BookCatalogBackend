@@ -1,8 +1,7 @@
-import { SortOrder } from 'mongoose'
-
 export type IPagination = {
-  page: number
-  limit: number
-  sortBy: string
-  sortOrder: SortOrder
-}
+	page: number;
+	size: number;
+	sortBy: string;
+	sortOrder: "asc" | "desc";
+};
+

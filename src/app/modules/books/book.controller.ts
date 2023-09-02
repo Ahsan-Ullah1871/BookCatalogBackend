@@ -1,114 +1,106 @@
-import { Request, Response } from 'express'
-import httpStatus from 'http-status'
-import catchAsync from '../../../shared/catchAsync'
-import sendResponse from '../../../shared/sendResponse'
-import { BookServices } from './book.services'
-import pick from '../../../shared/pick'
-import { book_filter_keys } from './book.constant'
-import { pagination_keys } from '../../../constant/common'
+import { Request, Response } from "express";
+import httpStatus from "http-status";
+import catchAsync from "../../../shared/catchAsync";
+import sendResponse from "../../../shared/sendResponse";
+import { BookServices } from "./book.services";
+import pick from "../../../shared/pick";
+import { book_filter_keys } from "./book.constant";
+import { pagination_keys } from "../../../constant/common";
 
 // Create Book
 const createBook = catchAsync(async (req: Request, res: Response) => {
-  const { ...book_data } = req.body
-  const user_data = req.logged_in_user
-  const result = await BookServices.create_new_book(book_data, user_data)
+	const { ...book_data } = req.body;
 
-  sendResponse(res, {
-    status_code: httpStatus.OK,
-    success: true,
-    data: result,
-    message: 'Book created successfully',
-  })
-})
+	const result = await BookServices.create_new_book(book_data);
+
+	sendResponse(res, {
+		status_code: httpStatus.OK,
+		success: true,
+		data: result,
+		message: "Book created successfully",
+	});
+});
 
 //  updateBook
 const updateBook = catchAsync(async (req: Request, res: Response) => {
-  const { id: book_id } = req.params
-  const { _id: owner_id } = req.logged_in_user
+	const { id: book_id } = req.params;
 
-  const { ...book_data } = req.body
-  const result = await BookServices.update_book(book_data, book_id, owner_id)
+	const { ...book_data } = req.body;
+	const result = await BookServices.update_book(book_data, book_id);
 
-  sendResponse(res, {
-    status_code: httpStatus.OK,
-    success: true,
-    data: result,
-    message: 'Book updated successfully',
-  })
-})
+	sendResponse(res, {
+		status_code: httpStatus.OK,
+		success: true,
+		data: result,
+		message: "Book updated successfully",
+	});
+});
 
 //  Get all books
 const allBooks = catchAsync(async (req: Request, res: Response) => {
-  const filers = pick(req.query, book_filter_keys)
-  const pagination = pick(req.query, pagination_keys)
+	const filers = pick(req.query, book_filter_keys);
+	const pagination = pick(req.query, pagination_keys);
 
-  const result = await BookServices.gel_all_books(filers, pagination)
+	const result = await BookServices.gel_all_books(filers, pagination);
 
-  sendResponse(res, {
-    status_code: httpStatus.OK,
-    success: true,
-    data: result,
-    message: 'Books retrieved successfully',
-  })
-})
-//  Get all latestTenBooks
-const latestTenBooks = catchAsync(async (req: Request, res: Response) => {
-  const result = await BookServices.latest_ten_books()
+	sendResponse(res, {
+		status_code: httpStatus.OK,
+		success: true,
+		data: result,
+		message: "Books retrieved successfully",
+	});
+});
+//
+const cateGoryBooks = catchAsync(async (req: Request, res: Response) => {
+	const { categoryID } = req.params;
+	const pagination = pick(req.query, pagination_keys);
 
-  sendResponse(res, {
-    status_code: httpStatus.OK,
-    success: true,
-    data: result,
-    message: 'Books retrieved successfully',
-  })
-})
+	const result = await BookServices.gel_books_by_category_id(
+		categoryID,
+		pagination
+	);
 
-//  Get all books
-const uniqueFilteringData = catchAsync(async (req: Request, res: Response) => {
-  const result = await BookServices.get__unique_filtering_items()
-
-  sendResponse(res, {
-    status_code: httpStatus.OK,
-    success: true,
-    data: result,
-    message: 'Filtering Items retrieved successfully',
-  })
-})
+	sendResponse(res, {
+		status_code: httpStatus.OK,
+		success: true,
+		data: result,
+		message: "Category Books retrieved successfully",
+	});
+});
 
 //   Get   Book Details
 const bookDetails = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params
+	const { id } = req.params;
 
-  const result = await BookServices.get_book_details(id)
+	const result = await BookServices.get_book_details(id);
 
-  sendResponse(res, {
-    status_code: httpStatus.OK,
-    success: true,
-    data: result,
-    message: 'Book details retrieved successfully',
-  })
-})
+	sendResponse(res, {
+		status_code: httpStatus.OK,
+		success: true,
+		data: result,
+		message: "Book details retrieved successfully",
+	});
+});
 
 //  Delete   Book
 const deleteBook = catchAsync(async (req: Request, res: Response) => {
-  const { id: book_id } = req.params
-  const { _id: seller_id } = req.logged_in_user
-  const result = await BookServices.delete_book(book_id, seller_id)
+	const { id: book_id } = req.params;
+	const result = await BookServices.delete_book(book_id);
 
-  sendResponse(res, {
-    status_code: httpStatus.OK,
-    success: true,
-    data: result,
-    message: 'Book deleted successfully',
-  })
-})
+	sendResponse(res, {
+		status_code: httpStatus.OK,
+		success: true,
+		data: result,
+		message: "Book deleted successfully",
+	});
+});
 
 export const BookController = {
-  createBook,
-  bookDetails,
-  updateBook,
-  deleteBook,
-  allBooks,
-  uniqueFilteringData,
-  latestTenBooks,
-}
+	createBook,
+	bookDetails,
+	updateBook,
+	deleteBook,
+	allBooks,
+	cateGoryBooks,
+};
+

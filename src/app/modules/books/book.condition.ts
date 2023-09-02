@@ -1,38 +1,31 @@
-import { book_search_condition_keys } from './book.constant'
-import { IBookFilter } from './book.interface'
+import { book_search_condition_keys } from "./book.constant";
+import { IBookFilter } from "./book.interface";
 
-export const filter_book_conditions = (
-  filers: IBookFilter
-): { [key: string]: Array<Record<string, any>> } | undefined => {
-  const { searchTerm, ...filter_keys } = filers
+export const GetWhereConditions = (filters: IBookFilter) => {
+	const { search, ...filterData } = filters;
+	const andConditions = [];
 
-  const conditions = []
+	if (search) {
+		andConditions.push({
+			OR: book_search_condition_keys.map((field) => ({
+				[field]: {
+					contains: search,
+					mode: "insensitive",
+				},
+			})),
+		});
+	}
 
-  if (searchTerm) {
-    conditions.push({
-      $or: book_search_condition_keys.map(item => ({
-        [item]: {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      })),
-    })
-  }
+	if (Object.keys(filterData).length > 0) {
+		andConditions.push({
+			AND: Object.keys(filterData).map((key) => ({
+				[key]: {
+					equals: (filterData as any)[key],
+				},
+			})),
+		});
+	}
 
-  //
-  if (Object.keys(filter_keys).length) {
-    conditions.push({
-      $and: Object.entries(filter_keys).map(([key, value]) => {
-        if (key === 'publication_date') {
-          return { publication_date: { $regex: '^' + value } }
-        } else if (key === 'genre') {
-          return { genre: new RegExp(`\\b${value}\\b`, 'i') }
-        } else {
-          return { [key]: value }
-        }
-      }),
-    })
-  }
+	return andConditions?.length > 0 ? { AND: andConditions } : {};
+};
 
-  return conditions?.length > 0 ? { $and: conditions } : undefined
-}
