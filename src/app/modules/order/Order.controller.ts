@@ -54,7 +54,7 @@ const orderCreate = catchAsync(async (req: Request, res: Response) => {
 		status_code: httpStatus.OK,
 		success: true,
 		data: result,
-		message: "Category created successfully",
+		message: "Order created successfully",
 	});
 });
 
