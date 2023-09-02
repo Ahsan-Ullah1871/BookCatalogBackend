@@ -30,6 +30,19 @@ const userDetails = catchAsync(async (req: Request, res: Response) => {
 		message: "User's information retrieved successfully",
 	});
 });
+//  Get   users_profile
+const userProfile = catchAsync(async (req: Request, res: Response) => {
+	const user_data = req.logged_in_user;
+
+	const result = await UserServices.users_profile(user_data);
+
+	sendResponse(res, {
+		status_code: httpStatus.OK,
+		success: true,
+		data: result,
+		message: "User's information retrieved successfully",
+	});
+});
 //  Get   user profile information
 const userUpdate = catchAsync(async (req: Request, res: Response) => {
 	const { id: user_id } = req.params;
@@ -64,5 +77,6 @@ export const UserController = {
 	usersList,
 	userUpdate,
 	deleteUser,
+	userProfile,
 };
 
