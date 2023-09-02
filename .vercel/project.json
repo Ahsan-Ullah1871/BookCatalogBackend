@@ -1,0 +1,14 @@
+{
+  "projectId": "prj_FffmQOqsGOqGyjb5Zjxco6VHT8CC",
+  "orgId": "Dc0WAemLfF5tFmknKdn1L3jc",
+  "settings": {
+    "createdAt": 1693645639371,
+    "devCommand": null,
+    "installCommand": null,
+    "buildCommand": null,
+    "outputDirectory": null,
+    "rootDirectory": null,
+    "directoryListing": false,
+    "nodeVersion": "18.x"
+  }
+}

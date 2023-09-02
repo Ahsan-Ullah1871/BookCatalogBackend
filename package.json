@@ -9,12 +9,9 @@
     "lint:check": "eslint --ignore-path .eslintignore --ext .js,.ts .",
     "lint:fix": "eslint --fix",
     "prettier:check": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
-    "lint-prettier": "yarn lint:check && yarn prettier:check",
-    "postinstall": "husky install",
-    "build": "tsc"
-  },
-  "lint-staged": {
-    "src/**/*.ts": "yarn lint-prettier"
+    "lint-prettier": "yarn lint:check && yarn prettier:check prisma generate",
+    "postinstall": "prisma generate",
+    "build": "prisma generate && tsc"
   },
   "author": "Ahsan",
   "license": "ISC",
